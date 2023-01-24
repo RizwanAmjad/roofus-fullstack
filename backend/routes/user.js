@@ -64,4 +64,15 @@ router.get("/", async (req, res) => {
   return res.send({ data: users, count: users.length })
 })
 
+// get user by id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params
+  // paginate the users
+  const user = await User.findById(id)
+
+  if (!user) return res.status(200).send({ error: "User not found" })
+
+  return res.send({ data: user })
+})
+
 module.exports = router

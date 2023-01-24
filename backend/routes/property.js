@@ -64,4 +64,15 @@ router.get("/", async (req, res) => {
   return res.send({ data: properties, count: properties.length })
 })
 
+// get property by id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params
+  // paginate the users
+  const property = await Property.findById(id)
+
+  if (!property) return res.status(200).send({ error: "Property not found" })
+
+  return res.send({ data: property })
+})
+
 module.exports = router

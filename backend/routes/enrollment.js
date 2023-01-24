@@ -85,4 +85,19 @@ router.get("/", async (req, res) => {
   return res.send({ data: openHouses, count: openHouses.length })
 })
 
+// get enrollment by id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params
+  // paginate the users
+  const enrollment = await Enrollment.findById(id).populate([
+    "openHouse",
+    "user",
+  ])
+
+  if (!enrollment)
+    return res.status(200).send({ error: "Enrollment not found" })
+
+  return res.send({ data: enrollment })
+})
+
 module.exports = router

@@ -76,4 +76,15 @@ router.get("/", async (req, res) => {
   return res.send({ data: openHouses, count: openHouses.length })
 })
 
+// get openhouse by id
+router.get("/:id", async (req, res) => {
+  const { id } = req.params
+  // paginate the users
+  const openHouse = await OpenHouse.findById(id).populate(["property"])
+
+  if (!openHouse) return res.status(200).send({ error: "Open House not found" })
+
+  return res.send({ data: openHouse })
+})
+
 module.exports = router
