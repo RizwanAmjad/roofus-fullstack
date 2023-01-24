@@ -22,4 +22,27 @@ router.post("/", async (req, res) => {
   }
 })
 
+// delete user
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params
+  // delete the user
+  try {
+    const user = await User.findById(id)
+    if (!user) return res.status(404).send({ error: "Painting not Found!" })
+    return res.send(await user.remove())
+  } catch (ex) {
+    return res.status(500).send({ error: "Server Error" })
+  }
+})
+
+router.get("/", async (req, res) => {
+  const { page, limit } = req.query
+  // paginate the users
+  const users = await User.find()
+    .limit(limit)
+    .skip(limit * (page - 1))
+
+  return res.send({ data: users, count: users.length })
+})
+
 module.exports = router
