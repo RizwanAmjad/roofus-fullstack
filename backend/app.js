@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 
 // routes
 const admin = require("./routes/admin")
+const enrollment = require("./routes/enrollment")
 const openHouse = require("./routes/openHouse")
 const property = require("./routes/property")
 const user = require("./routes/user")
@@ -22,6 +23,7 @@ const app = express()
 app.use(express.json())
 
 app.use("/api/admin", admin)
+app.use("/api/enrollment", enrollment)
 app.use("/api/open-house", openHouse)
 app.use("/api/property", property)
 app.use("/api/user", user)
