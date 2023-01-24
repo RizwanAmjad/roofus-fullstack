@@ -20,7 +20,7 @@ const validateOpenHouseJoi = (openHouse) => {
     property: Joi.string()
       .required()
       .regex(/^[0-9a-fA-F]{24}$/)
-      .message("Property Id must a valid Object Id"),
+      .message("Property must a valid Object Id"),
     visitorAmount: Joi.number().required().min(0).label("Visitor Amount"),
     startDate: Joi.number().required().min(0).label("Start Date"),
     endDate: Joi.number().required().min(0).label("End Date"),
