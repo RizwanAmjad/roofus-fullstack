@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 
 // routes
 const admin = require("./routes/admin")
+const property = require("./routes/property")
 const user = require("./routes/user")
 
 const MONGODB_URI =
@@ -20,6 +21,7 @@ const app = express()
 app.use(express.json())
 
 app.use("/api/admin", admin)
+app.use("/api/property", property)
 app.use("/api/user", user)
 
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`))
