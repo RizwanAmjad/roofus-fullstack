@@ -8,6 +8,8 @@ const openHouse = require("./routes/openHouse")
 const property = require("./routes/property")
 const user = require("./routes/user")
 
+const adminAuth = require("./middlewares/authAdmin")
+
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/roofus"
 const PORT = process.env.PORT || 3000
@@ -23,9 +25,9 @@ const app = express()
 app.use(express.json())
 
 app.use("/api/admin", admin)
-app.use("/api/enrollment", enrollment)
-app.use("/api/open-house", openHouse)
-app.use("/api/property", property)
-app.use("/api/user", user)
+app.use("/api/enrollment", adminAuth, enrollment)
+app.use("/api/open-house", adminAuth, openHouse)
+app.use("/api/property", adminAuth, property)
+app.use("/api/user", adminAuth, user)
 
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`))
