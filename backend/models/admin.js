@@ -30,6 +30,11 @@ AdminSchema.methods.generateAuthToken = function () {
   )
 }
 
+// compare raw password with hashed password
+AdminSchema.methods.comparePassword = function (password) {
+  return bcrypt.compare(password, this.password)
+}
+
 const Admin = mongoose.model("Admin", AdminSchema)
 
 const validateAdminJoi = (user) => {
