@@ -10,15 +10,15 @@ router.post("/", async (req, res) => {
   let user = req.body
   //valdate the user
   const error = validateUserJoi(user)
-  if (error) return res.status(400).send(error)
+  if (error) return res.status(400).send({ error })
 
   // create and save mongoose object
   try {
     user = new User(user)
     user = await user.save()
-    return res.send(user)
+    return res.send({ data: user })
   } catch {
-    return res.status(500).send("Server Error")
+    return res.status(500).send({ error: "Server Error" })
   }
 })
 

@@ -19,20 +19,20 @@ router.post("/", async (req, res) => {
   let admin = req.body
   const error = validateAdminJoi(admin)
   // validate admin in request
-  if (error) return res.status(400).send(error)
+  if (error) return res.status(400).send({ error })
 
   const isAlreadyRegistered = await Admin.findOne({ email: admin.email })
   if (isAlreadyRegistered)
-    return res.status(400).send("Admin already Registered.")
+    return res.status(400).send({ error: "Admin already Registered." })
 
   // create the new admin
   admin = new Admin(admin)
   try {
     // save the admin into database
     admin = await admin.save()
-    return res.send(admin.generateAuthToken())
+    return res.send({ data: admin.generateAuthToken() })
   } catch {
-    return res.status(500).send("Server Error")
+    return res.status(500).send({ error: "Server Error" })
   }
 })
 
@@ -42,17 +42,18 @@ router.post("/auth", async (req, res) => {
   const error = validateAdminLoginJoi(loginAdmin)
 
   // validate admin in request
-  if (error) return res.status(400).send(error)
+  if (error) return res.status(400).send({ error })
 
   // check if admin with given email exists
   const admin = await Admin.findOne({ email: loginAdmin.email })
 
-  if (!admin) return res.status(400).send("Invalid Email or Password")
+  if (!admin)
+    return res.status(400).send({ error: "Invalid Email or Password" })
 
   // if admin is found then compare password
   if (!(await admin.comparePassword(loginAdmin.password)))
-    return res.status(400).send("Invalid Email or Password")
-  return res.send(admin.generateAuthToken())
+    return res.status(400).send({ error: "Invalid Email or Password" })
+  return res.send({ data: admin.generateAuthToken() })
 })
 
 module.exports = router
