@@ -27,14 +27,33 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params
   // delete the user
   try {
-    const user = await User.findById(id)
-    if (!user) return res.status(404).send({ error: "Painting not Found!" })
-    return res.send(await user.remove())
+    const user = await User.findByIdAndRemove(id)
+    if (!user) return res.status(404).send({ error: "User not Found!" })
+    return res.send({ data: user })
   } catch (ex) {
     return res.status(500).send({ error: "Server Error" })
   }
 })
 
+// update user
+router.put("/:id", async (req, res) => {
+  const { id } = req.params
+  let user = req.body
+
+  const error = validateUserJoi(user)
+  if (error) return res.status(400).send({ error })
+
+  // update the user
+  try {
+    user = await User.findByIdAndUpdate(id, user)
+    if (!user) return res.status(404).send({ error: "User not Found!" })
+    return res.send({ data: user })
+  } catch (ex) {
+    return res.status(500).send({ error: "Server Error" })
+  }
+})
+
+// get paginated users
 router.get("/", async (req, res) => {
   const { page, limit } = req.query
   // paginate the users
