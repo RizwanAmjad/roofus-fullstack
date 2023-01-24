@@ -1,6 +1,9 @@
 const express = require("express")
 const mongoose = require("mongoose")
 
+// routes
+const admin = require("./routes/admin")
+
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/roofus"
 const PORT = process.env.PORT || 3000
@@ -12,5 +15,9 @@ mongoose
   .catch(() => console.log("Couldn't connect to mongodb"))
 
 const app = express()
+
+app.use(express.json())
+
+app.use("/api/admin", admin)
 
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`))
