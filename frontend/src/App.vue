@@ -31,6 +31,8 @@ const currentView = computed(() => {
 </script>
 
 <template>
-  <Nav></Nav>
-  <component :is="currentView" />
+  <Nav class="p-4"></Nav>
+  <div class="m-4">
+    <component :is="currentView" />
+  </div>
 </template>
