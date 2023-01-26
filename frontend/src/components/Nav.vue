@@ -1,10 +1,21 @@
+<script setup>
+import { useAuthStore } from "../stores/auth"
+
+const authStore = useAuthStore()
+</script>
+
 <template>
   <div class="bg-gray-900 flex font-medium">
-    <div class="px-4 py-2"><a href="#/">Home</a></div>
-    <div class="px-4 py-2"><a href="#/login">Login</a></div>
-    <div class="px-4 py-2"><a href="#/enrollment">Enrollment</a></div>
-    <div class="px-4 py-2"><a href="#/open-house">Open House</a></div>
-    <div class="px-4 py-2"><a href="#/property">Property</a></div>
-    <div class="px-4 py-2"><a href="#/user">User</a></div>
+    <template v-if="authStore.user">
+      <div class="px-4 py-2"><a href="#/">Home</a></div>
+      <div class="px-4 py-2"><a href="#/enrollment">Enrollment</a></div>
+      <div class="px-4 py-2"><a href="#/open-house">Open House</a></div>
+      <div class="px-4 py-2"><a href="#/property">Property</a></div>
+      <div class="px-4 py-2"><a href="#/user">User</a></div>
+      <div class="px-4 py-2">Logout</div>
+    </template>
+    <div class="px-4 py-2" v-else>
+      <a href="#/login">Login</a>
+    </div>
   </div>
 </template>

@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "apisauce": "^2.1.6",
+    "pinia": "^2.0.29",
     "vue": "^3.2.45"
   },
   "devDependencies": {

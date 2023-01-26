@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed, watchEffect } from "vue"
 
 import Nav from "./components/Nav.vue"
 
@@ -9,6 +9,17 @@ import Login from "./pages/Login.vue"
 import OpenHouse from "./pages/OpenHouse.vue"
 import Property from "./pages/Property.vue"
 import User from "./pages/User.vue"
+
+import { useAuthStore } from "./stores/auth"
+import auth from "./auth"
+
+const authStore = useAuthStore()
+
+// check if we are authenticated
+watchEffect(() => {
+  const user = auth.user()
+  if (user) authStore.login(user)
+})
 
 const routes = {
   "/": Home,

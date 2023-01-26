@@ -4,9 +4,27 @@ import { reactive } from "vue"
 import Input from "../components/Form/Input.vue"
 import Submit from "../components/Form/Submit.vue"
 
+import adminApi from "../api/admin"
+
+import { useAuthStore } from "../stores/auth"
+
+const authStore = useAuthStore()
 const loginState = reactive({ email: { data: "" }, password: { data: "" } })
 
-const handleSubmit = () => {}
+const handleLogin = async () => {
+  const result = await adminApi.adminAuth({
+    email: loginState.email.data,
+    password: loginState.password.data,
+  })
+
+  const { data: response } = result
+
+  if (result.ok) {
+    return authStore.login(response.data)
+  }
+
+  return alert(response.error)
+}
 </script>
 
 <template>
@@ -25,6 +43,6 @@ const handleSubmit = () => {}
       placeholder="Password"
       :value="loginState.password"
     />
-    <Submit :onSubmit="handleSubmit">Submit</Submit>
+    <Submit :onSubmit="handleLogin">Submit</Submit>
   </div>
 </template>
