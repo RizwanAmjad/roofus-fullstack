@@ -44,6 +44,19 @@ const handleCreateUser = async () => {
   }
   alert(result.error)
 }
+
+const handleDelete = async (id) => {
+  const response = await userApi.deleteUser(id)
+  const { data: result } = response
+  if (response.ok) {
+    users.value = users.value.filter(({ _id }) => _id !== result.data._id)
+    return
+  }
+}
+
+const handleUpdate = (id) => {
+  console.log(id)
+}
 </script>
 
 <template>
@@ -61,7 +74,12 @@ const handleCreateUser = async () => {
   </div>
 
   <div class="mt-4">
-    <UserItem v-for="user in users" :name="user.name" />
+    <UserItem
+      v-for="user in users"
+      :name="user.name"
+      :onDelete="() => handleDelete(user._id)"
+      :onUpdate="() => handleUpdate(user._id)"
+    />
   </div>
 
   <Pagination
