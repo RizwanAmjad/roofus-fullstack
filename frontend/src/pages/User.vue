@@ -7,8 +7,10 @@ import Submit from "../components/Form/Submit.vue"
 import userApi from "../api/user"
 import UserItem from "../components/UserItem.vue"
 import Pagination from "../components/Pagination.vue"
+import Modal from "../components/Modal.vue"
 
 const userFormState = reactive({ name: { data: "" } })
+const userUpdateFormState = reactive({ name: { data: "" } })
 const paginationState = reactive({
   limit: { data: 5 },
   page: { data: 1 },
@@ -16,6 +18,7 @@ const paginationState = reactive({
 })
 
 const users = ref([])
+const editingId = reactive({ data: undefined })
 
 watchEffect(async () => {
   const response = await userApi.listUser(
@@ -54,8 +57,28 @@ const handleDelete = async (id) => {
   }
 }
 
-const handleUpdate = (id) => {
-  console.log(id)
+const handleOpenUpdate = (id) => {
+  editingId.data = id
+  const user = users.value.find((user) => user._id === id)
+
+  userUpdateFormState.name.data = user.name
+}
+
+const handleUpdate = async () => {
+  const user = users.value.find((user) => user._id === editingId.data)
+  // update in backend
+  await userApi.updateUser(editingId.data, {
+    name: userUpdateFormState.name.data,
+  })
+  // update in UI
+  users.value = users.value.map((user) =>
+    user._id === editingId.data
+      ? { ...user, name: userUpdateFormState.name.data }
+      : user
+  )
+
+  // close the modal
+  editingId.data = undefined
 }
 </script>
 
@@ -78,7 +101,7 @@ const handleUpdate = (id) => {
       v-for="user in users"
       :name="user.name"
       :onDelete="() => handleDelete(user._id)"
-      :onUpdate="() => handleUpdate(user._id)"
+      :onUpdate="() => handleOpenUpdate(user._id)"
     />
   </div>
 
@@ -88,4 +111,17 @@ const handleUpdate = (id) => {
     :page="paginationState.page"
     :totalPages="paginationState.totalPages"
   />
+
+  <Modal :shown="editingId">
+    <div class="w-2/3 m-auto">
+      <Input
+        class="my-1"
+        type="text"
+        label="Name"
+        placeholder="Name"
+        :value="userUpdateFormState.name"
+      />
+      <Submit class="my-1" :onSubmit="() => handleUpdate()">Update User</Submit>
+    </div>
+  </Modal>
 </template>
