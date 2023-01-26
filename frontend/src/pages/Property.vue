@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, ref, watchEffect } from "vue"
 
+import Modal from "../components/Modal.vue"
 import Pagination from "../components/Pagination.vue"
 import PropertyItem from "../components/PropertyItem.vue"
 
@@ -17,7 +18,7 @@ const propertyFormState = reactive({
 
 const propertyUpdateFormState = reactive({
   address: { data: "" },
-  price: { data: 0 },
+  price: { data: undefined },
   description: { data: "" },
 })
 
@@ -60,6 +61,46 @@ const handleCreateProperty = async () => {
     return
   }
   alert(result.error)
+}
+
+const handleDelete = async (id) => {
+  const sureToDelete = confirm("Are you sure to delete Property?")
+  if (!sureToDelete) return
+
+  const response = await propertyApi.deleteProperty(id)
+  const { data: result } = response
+  if (response.ok) {
+    properties.value = properties.value.filter(
+      ({ _id }) => _id !== result.data._id
+    )
+    return
+  }
+}
+
+const handleOpenUpdate = (id) => {
+  editingId.data = id
+  const property = properties.value.find((property) => property._id === id)
+
+  propertyUpdateFormState.address.data = property.address
+  propertyUpdateFormState.price.data = property.price
+  propertyUpdateFormState.description.data = property.description
+}
+
+const handleUpdate = async () => {
+  const updates = {
+    address: propertyUpdateFormState.address.data,
+    price: propertyUpdateFormState.price.data,
+    description: propertyUpdateFormState.description.data,
+  }
+  // update in backend
+  await propertyApi.updateProperty(editingId.data, updates)
+  // update in UI
+  properties.value = properties.value.map((property) =>
+    property._id === editingId.data ? { ...property, ...updates } : property
+  )
+
+  // close the modal
+  editingId.data = undefined
 }
 </script>
 
@@ -110,4 +151,33 @@ const handleCreateProperty = async () => {
     :page="paginationState.page"
     :totalPages="paginationState.totalPages"
   />
+
+  <Modal :shown="editingId">
+    <div class="w-2/3 m-auto">
+      <Input
+        class="my-1"
+        type="text"
+        label="Address"
+        placeholder="Address"
+        :value="propertyUpdateFormState.address"
+      />
+      <Input
+        class="my-1"
+        type="number"
+        label="Price"
+        placeholder="Price"
+        :value="propertyUpdateFormState.price"
+      />
+      <Input
+        class="my-1"
+        type="text"
+        label="Description"
+        placeholder="Description"
+        :value="propertyUpdateFormState.description"
+      />
+      <Submit class="my-1" :onSubmit="() => handleUpdate()"
+        >Update Property</Submit
+      >
+    </div>
+  </Modal>
 </template>
