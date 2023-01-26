@@ -9,6 +9,7 @@ import Input from "../components/Form/Input.vue"
 import Submit from "../components/Form/Submit.vue"
 
 import propertyApi from "../api/property"
+import TableHeader from "../components/TableHeader.vue"
 
 const propertyFormState = reactive({
   address: { data: "" },
@@ -135,6 +136,7 @@ const handleUpdate = async () => {
   </div>
 
   <div class="mt-4">
+    <TableHeader :headers="['Address', 'Price', 'Description']" />
     <PropertyItem
       v-for="property in properties"
       :address="property.address"

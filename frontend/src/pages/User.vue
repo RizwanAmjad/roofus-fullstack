@@ -8,6 +8,7 @@ import userApi from "../api/user"
 import UserItem from "../components/UserItem.vue"
 import Pagination from "../components/Pagination.vue"
 import Modal from "../components/Modal.vue"
+import TableHeader from "../components/TableHeader.vue"
 
 const userFormState = reactive({ name: { data: "" } })
 const userUpdateFormState = reactive({ name: { data: "" } })
@@ -68,15 +69,14 @@ const handleOpenUpdate = (id) => {
 }
 
 const handleUpdate = async () => {
-  // update in backend
-  await userApi.updateUser(editingId.data, {
+  const updates = {
     name: userUpdateFormState.name.data,
-  })
+  }
+  // update in backend
+  await userApi.updateUser(editingId.data, updates)
   // update in UI
   users.value = users.value.map((user) =>
-    user._id === editingId.data
-      ? { ...user, name: userUpdateFormState.name.data }
-      : user
+    user._id === editingId.data ? { ...user, ...updates } : user
   )
 
   // close the modal
@@ -99,6 +99,7 @@ const handleUpdate = async () => {
   </div>
 
   <div class="mt-4">
+    <TableHeader :headers="['Name']" />
     <UserItem
       v-for="user in users"
       :name="user.name"
