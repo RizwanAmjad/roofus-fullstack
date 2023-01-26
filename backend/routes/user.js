@@ -58,10 +58,17 @@ router.get("/", async (req, res) => {
   const { page, limit } = req.query
   // paginate the users
   const users = await User.find()
+    .sort({ _id: -1 })
     .limit(limit)
     .skip(limit * (page - 1))
 
-  return res.send({ data: users, count: users.length })
+  const count = await User.find().count()
+
+  return res.send({
+    data: users,
+    count: users.length,
+    totalPages: Math.ceil(count / limit),
+  })
 })
 
 // get user by id
