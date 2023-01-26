@@ -2,25 +2,25 @@ import request from "./request"
 
 const endpoint = "/property"
 
-const createProperty = (user) => {
-  return request.post(endpoint, user)
+const createProperty = (property) => {
+  return request.post(endpoint, property)
 }
 
 const deleteProperty = (id) => {
   return request.delete(`${endpoint}/${id}`)
 }
 
-const listProperty = (limit, page) => {
+const listProperties = (limit, page) => {
   return request.get(endpoint, { limit, page })
 }
 
-const updateProperty = (id, user) => {
-  return request.put(`${endpoint}/${id}`, user)
+const updateProperty = (id, property) => {
+  return request.put(`${endpoint}/${id}`, property)
 }
 
 export default {
   createProperty,
   deleteProperty,
-  listProperty,
+  listProperties,
   updateProperty,
 }

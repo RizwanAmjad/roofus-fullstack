@@ -58,10 +58,17 @@ router.get("/", async (req, res) => {
   const { page, limit } = req.query
   // paginate the properties
   const properties = await Property.find()
+    .sort({ _id: -1 })
     .limit(limit)
     .skip(limit * (page - 1))
 
-  return res.send({ data: properties, count: properties.length })
+  const count = await Property.find().count()
+
+  return res.send({
+    data: properties,
+    count: properties.length,
+    totalPages: Math.ceil(count / limit),
+  })
 })
 
 // get property by id
