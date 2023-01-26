@@ -49,6 +49,9 @@ const handleCreateUser = async () => {
 }
 
 const handleDelete = async (id) => {
+  const sureToDelete = confirm("Are you sure to delete User?")
+  if (!sureToDelete) return
+
   const response = await userApi.deleteUser(id)
   const { data: result } = response
   if (response.ok) {
@@ -65,7 +68,6 @@ const handleOpenUpdate = (id) => {
 }
 
 const handleUpdate = async () => {
-  const user = users.value.find((user) => user._id === editingId.data)
   // update in backend
   await userApi.updateUser(editingId.data, {
     name: userUpdateFormState.name.data,
