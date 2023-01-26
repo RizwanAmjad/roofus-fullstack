@@ -1,3 +1,4 @@
+const cors = require("cors")
 const express = require("express")
 const mongoose = require("mongoose")
 
@@ -23,6 +24,7 @@ mongoose
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 app.use("/api/admin", admin)
 app.use("/api/enrollment", adminAuth, enrollment)
