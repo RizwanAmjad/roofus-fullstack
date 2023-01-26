@@ -16,10 +16,8 @@ import auth from "./auth"
 const authStore = useAuthStore()
 
 // check if we are authenticated
-watchEffect(() => {
-  const user = auth.user()
-  if (user) authStore.login(user)
-})
+const user = auth.user()
+if (user) authStore.login(user)
 
 const routes = {
   "/": Home,

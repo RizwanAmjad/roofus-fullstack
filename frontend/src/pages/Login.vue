@@ -11,6 +11,8 @@ import { useAuthStore } from "../stores/auth"
 const authStore = useAuthStore()
 const loginState = reactive({ email: { data: "" }, password: { data: "" } })
 
+if (authStore.user) window.location.hash = "/"
+
 const handleLogin = async () => {
   const result = await adminApi.adminAuth({
     email: loginState.email.data,
@@ -20,7 +22,9 @@ const handleLogin = async () => {
   const { data: response } = result
 
   if (result.ok) {
-    return authStore.login(response.data)
+    authStore.login(response.data)
+    window.location.hash = "/"
+    return
   }
 
   return alert(response.error)
