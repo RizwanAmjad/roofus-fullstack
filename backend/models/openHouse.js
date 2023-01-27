@@ -10,8 +10,8 @@ const OpenHouse = mongoose.model(
       ref: "Property",
     },
     visitorAmount: { type: Number, required: true, min: 0 },
-    startDate: { type: Number, required: true },
-    endDate: { type: Number, required: true },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
   })
 )
 
@@ -22,8 +22,8 @@ const validateOpenHouseJoi = (openHouse) => {
       .regex(/^[0-9a-fA-F]{24}$/)
       .message("Property must a valid Object Id"),
     visitorAmount: Joi.number().required().min(0).label("Visitor Amount"),
-    startDate: Joi.number().required().min(0).label("Start Date"),
-    endDate: Joi.number().required().min(0).label("End Date"),
+    startDate: Joi.date().required().min(0).label("Start Date"),
+    endDate: Joi.date().required().min(0).label("End Date"),
   })
   const { error } = schema.validate(openHouse)
   return error ? error.details[0].message : error

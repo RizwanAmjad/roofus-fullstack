@@ -5,6 +5,7 @@ import Input from "../components/Form/Input.vue"
 import SelectMenu from "../components/Form/SelectMenu.vue"
 import Submit from "../components/Form/Submit.vue"
 
+import openHouseApi from "../api/openHouse"
 import propertyApi from "../api/property"
 
 const openHouseFormState = reactive({
@@ -27,8 +28,23 @@ watchEffect(async () => {
   }
 })
 
-const handleCreateOpenHouse = () => {
-  console.log({ property: openHouseFormState.property.data })
+const handleCreateOpenHouse = async () => {
+  const response = openHouseApi.createOpenHouse({
+    property: openHouseFormState.property.data,
+    visitorAmount: openHouseFormState.visitorAmount.data,
+    startDate: openHouseFormState.startDate.data,
+    endDate: openHouseFormState.endDate.data,
+  })
+
+  const { data: result } = response
+  if (response.ok) {
+    users.value = [result.data, ...users.value].splice(
+      0,
+      paginationState.limit.data
+    )
+    return
+  }
+  alert(result.error)
 }
 </script>
 
