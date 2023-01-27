@@ -2,6 +2,7 @@
 import { reactive, ref, watchEffect } from "vue"
 
 import EnrollmentItem from "../components/EnrollmentItem.vue"
+import Modal from "../components/Modal.vue"
 import Pagination from "../components/Pagination.vue"
 import SelectMenu from "../components/Form/SelectMenu.vue"
 import TableHeader from "../components/TableHeader.vue"
@@ -87,6 +88,44 @@ const handleCreateEnrollment = async () => {
   }
   alert(result.error)
 }
+
+const handleDelete = async (id) => {
+  const sureToDelete = confirm("Are you sure to delete Enrollment?")
+  if (!sureToDelete) return
+
+  const response = await enrollmentApi.deleteEnrollment(id)
+  const { data: result } = response
+  if (response.ok) {
+    enrollments.value = enrollments.value.filter(
+      ({ _id }) => _id !== result.data._id
+    )
+    return
+  }
+}
+
+const handleOpenUpdate = (id) => {
+  editingId.data = id
+  const enrollment = enrollments.value.find(
+    (enrollment) => enrollment._id === id
+  )
+
+  enrollmentUpdateFormState.openHouse.data = enrollment.openHouse._id
+  enrollmentUpdateFormState.user.data = enrollment.user._id
+}
+
+const handleUpdate = async () => {
+  const updates = {
+    openHouse: enrollmentUpdateFormState.openHouse.data,
+    user: enrollmentUpdateFormState.user.data,
+  }
+  // update in backend
+  await enrollmentApi.updateEnrollments(editingId.data, updates)
+  // update in UI
+  await loadEnrollments()
+
+  // close the modal
+  editingId.data = undefined
+}
 </script>
 
 <template>
@@ -132,4 +171,27 @@ const handleCreateEnrollment = async () => {
     :page="paginationState.page"
     :totalPages="paginationState.totalPages"
   />
+
+  <Modal :shown="editingId">
+    <div class="w-2/3 m-auto">
+      <SelectMenu
+        class="my-1"
+        label="Open House"
+        :options="openHouses"
+        :showKey="
+          (key) => `${key.property.address} (${formatDate(key.startDate)})`
+        "
+        :value="enrollmentUpdateFormState.openHouse"
+      />
+      <SelectMenu
+        class="my-1"
+        label="User"
+        :options="users"
+        :showKey="(key) => key.name"
+        :value="enrollmentUpdateFormState.user"
+      />
+
+      <Submit class="my-1" :onSubmit="handleUpdate">Update Enrollment</Submit>
+    </div>
+  </Modal>
 </template>
