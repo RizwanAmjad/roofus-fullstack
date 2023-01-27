@@ -70,10 +70,17 @@ router.get("/", async (req, res) => {
   // paginate the openHouse
   const openHouses = await OpenHouse.find()
     .populate("property")
+    .sort({ _id: -1 })
     .limit(limit)
     .skip(limit * (page - 1))
 
-  return res.send({ data: openHouses, count: openHouses.length })
+  const count = await OpenHouse.find().count()
+
+  return res.send({
+    data: openHouses,
+    count: openHouses.length,
+    totalPages: Math.ceil(count / limit),
+  })
 })
 
 // get openhouse by id
