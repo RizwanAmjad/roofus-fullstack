@@ -13,7 +13,7 @@ defineProps([
   <div class="flex items-center justify-between">
     <div class="grid grid-cols-4 w-5/6 text-center">
       <code class="text-ellipsis overflow-hidden text-left">{{
-        property._id
+        property
       }}</code>
       <div>{{ visitorAmount }}</div>
       <div>{{ startDate }}</div>
