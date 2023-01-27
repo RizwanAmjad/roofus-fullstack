@@ -142,7 +142,7 @@ const handleUpdate = async () => {
     <SelectMenu
       label="Property"
       :options="properties"
-      showKey="address"
+      :showKey="(key) => key.address"
       :value="openHouseFormState.property"
     />
     <Input
@@ -205,7 +205,7 @@ const handleUpdate = async () => {
       <SelectMenu
         label="Property"
         :options="properties"
-        showKey="address"
+        :showKey="(key) => key.address"
         :value="openHouseUpdateFormState.property"
       />
       <Input

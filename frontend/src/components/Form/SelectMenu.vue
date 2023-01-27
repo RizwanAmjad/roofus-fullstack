@@ -1,5 +1,5 @@
 <script setup>
-defineProps(["label", "options", "showKey", "value"])
+defineProps(["label", "options", "showKey", "showubKey", "value"])
 </script>
 
 <template>
@@ -11,7 +11,7 @@ defineProps(["label", "options", "showKey", "value"])
       v-model="value.data"
     >
       <option v-for="option in options" :value="option._id">
-        {{ option[showKey] }}
+        {{ showKey(option) }}
       </option>
     </select>
   </div>
