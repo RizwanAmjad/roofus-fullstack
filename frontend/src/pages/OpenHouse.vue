@@ -2,11 +2,14 @@
 import { reactive, ref, watchEffect } from "vue"
 
 import Input from "../components/Form/Input.vue"
+import Pagination from "../components/Pagination.vue"
 import SelectMenu from "../components/Form/SelectMenu.vue"
 import Submit from "../components/Form/Submit.vue"
+import TableHeader from "../components/TableHeader.vue"
 
 import openHouseApi from "../api/openHouse"
 import propertyApi from "../api/property"
+import OpenHouseItem from "../components/OpenHouseItem.vue"
 
 const openHouseFormState = reactive({
   property: { data: "" },
@@ -15,6 +18,13 @@ const openHouseFormState = reactive({
   endDate: { data: undefined },
 })
 
+const paginationState = reactive({
+  limit: { data: 5 },
+  page: { data: 1 },
+  totalPages: 0,
+})
+
+const openHouses = ref([])
 const properties = ref([])
 
 // load properties
@@ -27,6 +37,24 @@ watchEffect(async () => {
     properties.value = resultProperties
   }
 })
+
+// load open house
+watchEffect(async () => {
+  const response = await openHouseApi.listOpenHouse(
+    paginationState.limit.data,
+    paginationState.page.data
+  )
+
+  const { data: resultOpenHouses } = response.data
+  if (resultOpenHouses) {
+    // update properties
+    openHouses.value = resultOpenHouses
+    // set total pages
+    paginationState.totalPages = response.data.totalPages
+  }
+})
+
+const formatDate = (date) => new Date(date).toLocaleDateString()
 
 const handleCreateOpenHouse = async () => {
   const response = openHouseApi.createOpenHouse({
@@ -88,4 +116,25 @@ const handleCreateOpenHouse = async () => {
       >Create Open House</Submit
     >
   </div>
+  <div class="mt-4">
+    <TableHeader
+      :headers="['Property', 'Visitor Amount', 'Start Date', 'End Date']"
+    />
+    <OpenHouseItem
+      v-for="openHouse in openHouses"
+      :endDate="formatDate(openHouse.endDate)"
+      :property="openHouse.property"
+      :startDate="formatDate(openHouse.startDate)"
+      :visitorAmount="openHouse.visitorAmount"
+      :onDelete="() => handleDelete(property._id)"
+      :onUpdate="() => handleOpenUpdate(property._id)"
+    />
+  </div>
+
+  <Pagination
+    class="my-4"
+    :limit="paginationState.limit"
+    :page="paginationState.page"
+    :totalPages="paginationState.totalPages"
+  />
 </template>

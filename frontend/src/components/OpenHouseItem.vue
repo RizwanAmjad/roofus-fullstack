@@ -1,13 +1,23 @@
 <script setup>
-defineProps(["address", "price", "description", "onDelete", "onUpdate"])
+defineProps([
+  "endDate",
+  "property",
+  "startDate",
+  "visitorAmount",
+  "onDelete",
+  "onUpdate",
+])
 </script>
 
 <template>
   <div class="flex items-center justify-between">
-    <div class="grid grid-cols-3 w-5/6 text-center">
-      <div class="text-left">{{ address }}</div>
-      <div>{{ price }}</div>
-      <div>{{ description }}</div>
+    <div class="grid grid-cols-4 w-5/6 text-center">
+      <code class="text-ellipsis overflow-hidden text-left">{{
+        property._id
+      }}</code>
+      <div>{{ visitorAmount }}</div>
+      <div>{{ startDate }}</div>
+      <div>{{ endDate }}</div>
     </div>
     <div class="flex gap-2 w-auto">
       <button
