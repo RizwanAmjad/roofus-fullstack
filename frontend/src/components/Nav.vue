@@ -17,8 +17,8 @@ const handleLogout = () => {
       <div class="px-4 py-2"><a href="#/">Home</a></div>
       <div class="px-4 py-2"><a href="#/user">User</a></div>
       <div class="px-4 py-2"><a href="#/property">Property</a></div>
-      <div class="px-4 py-2"><a href="#/enrollment">Enrollment</a></div>
       <div class="px-4 py-2"><a href="#/open-house">Open House</a></div>
+      <div class="px-4 py-2"><a href="#/enrollment">Enrollment</a></div>
       <div class="px-4 py-2 cursor-pointer" @click="handleLogout">Logout</div>
     </template>
     <div class="px-4 py-2" v-else>

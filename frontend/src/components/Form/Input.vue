@@ -1,5 +1,5 @@
 <script setup>
-defineProps(["label", "placeholder", "type", "value"])
+defineProps(["label", "min", "placeholder", "type", "value"])
 </script>
 
 <template>
@@ -10,6 +10,7 @@ defineProps(["label", "placeholder", "type", "value"])
       :id="label"
       :placeholder="placeholder"
       :type="type"
+      :min="min"
       v-model="value.data"
     />
   </div>
