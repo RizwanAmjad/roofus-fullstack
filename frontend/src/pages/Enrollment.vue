@@ -1,7 +1,10 @@
 <script setup>
 import { reactive, ref, watchEffect } from "vue"
 
+import EnrollmentItem from "../components/EnrollmentItem.vue"
+import Pagination from "../components/Pagination.vue"
 import SelectMenu from "../components/Form/SelectMenu.vue"
+import TableHeader from "../components/TableHeader.vue"
 import Submit from "../components/Form/Submit.vue"
 
 import enrollmentApi from "../api/enrollment"
@@ -55,15 +58,23 @@ watchEffect(async () => {
 })
 
 // load enrollments
-watchEffect(async () => {
-  const response = await enrollmentApi.listEnrollments()
+
+const loadEnrollments = async () => {
+  const response = await enrollmentApi.listEnrollments(
+    paginationState.limit.data,
+    paginationState.page.data
+  )
 
   const { data: resultEnrollments } = response.data
   if (resultEnrollments) {
-    // update properties
+    // update enrollments
     enrollments.value = resultEnrollments
+    // update total pages in UI
+    paginationState.totalPages = response.data.totalPages
   }
-})
+}
+// load enrollments
+watchEffect(loadEnrollments)
 
 const handleCreateEnrollment = async () => {
   const response = await enrollmentApi.createEnrollment({
@@ -72,11 +83,7 @@ const handleCreateEnrollment = async () => {
   })
   const { data: result } = response
   if (response.ok) {
-    enrollments.value = [result.data, ...enrollments.value].splice(
-      0,
-      paginationState.limit.data
-    )
-    return
+    return await loadEnrollments()
   }
   alert(result.error)
 }
@@ -107,4 +114,22 @@ const handleCreateEnrollment = async () => {
       >Create Enrollment</Submit
     >
   </div>
+  <div class="mt-4">
+    <TableHeader :headers="['Property', 'User', 'Date']" />
+    <EnrollmentItem
+      v-for="enrollment in enrollments"
+      :property="enrollment.openHouse.property"
+      :date="formatDate(enrollment.date)"
+      :user="enrollment.user.name"
+      :onDelete="() => handleDelete(enrollment._id)"
+      :onUpdate="() => handleOpenUpdate(enrollment._id)"
+    />
+  </div>
+
+  <Pagination
+    class="my-4"
+    :limit="paginationState.limit"
+    :page="paginationState.page"
+    :totalPages="paginationState.totalPages"
+  />
 </template>
