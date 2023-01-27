@@ -4,8 +4,9 @@ import { reactive, ref, watchEffect } from "vue"
 import SelectMenu from "../components/Form/SelectMenu.vue"
 import Submit from "../components/Form/Submit.vue"
 
-import userApi from "../api/user"
+import enrollmentApi from "../api/enrollment"
 import openHouseApi from "../api/openHouse"
+import userApi from "../api/user"
 
 const enrollmentFormState = reactive({
   openHouse: { data: undefined },
@@ -23,6 +24,7 @@ const paginationState = reactive({
   totalPages: 0,
 })
 
+const enrollments = ref([])
 const openHouses = ref([])
 const users = ref([])
 
@@ -41,18 +43,43 @@ watchEffect(async () => {
   }
 })
 
-// load openHouse
+// load openHouses
 watchEffect(async () => {
   const response = await openHouseApi.listOpenHouse()
 
-  const { data: resultProperties } = response.data
-  if (resultProperties) {
+  const { data: resultOpenHouses } = response.data
+  if (resultOpenHouses) {
     // update properties
-    openHouses.value = resultProperties
+    openHouses.value = resultOpenHouses
   }
 })
 
-const handleCreateEnrollment = () => {}
+// load enrollments
+watchEffect(async () => {
+  const response = await enrollmentApi.listEnrollments()
+
+  const { data: resultEnrollments } = response.data
+  if (resultEnrollments) {
+    // update properties
+    enrollments.value = resultEnrollments
+  }
+})
+
+const handleCreateEnrollment = async () => {
+  const response = await enrollmentApi.createEnrollment({
+    openHouse: enrollmentFormState.openHouse.data,
+    user: enrollmentFormState.user.data,
+  })
+  const { data: result } = response
+  if (response.ok) {
+    enrollments.value = [result.data, ...enrollments.value].splice(
+      0,
+      paginationState.limit.data
+    )
+    return
+  }
+  alert(result.error)
+}
 </script>
 
 <template>
