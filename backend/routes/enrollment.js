@@ -79,10 +79,17 @@ router.get("/", async (req, res) => {
   // paginate the enrollments
   const openHouses = await Enrollment.find()
     .populate(["openHouse", "user"])
+    .sort({ _id: -1 })
     .limit(limit)
     .skip(limit * (page - 1))
 
-  return res.send({ data: openHouses, count: openHouses.length })
+  const count = await Enrollment.find().count()
+
+  return res.send({
+    data: openHouses,
+    count: openHouses.length,
+    totalPages: Math.ceil(count / limit),
+  })
 })
 
 // get enrollment by id
