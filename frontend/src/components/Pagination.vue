@@ -6,7 +6,7 @@ defineProps(["limit", "page", "totalPages"])
 
 <template>
   <div class="flex gap-4 items-center">
-    <Input label="Limit" type="number" :value="limit" />
+    <Input label="Limit" min="1" type="number" :value="limit" />
     <div>
       <div class="flex gap-2">
         <div

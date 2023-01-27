@@ -120,6 +120,7 @@ const handleUpdate = async () => {
       class="my-1"
       type="number"
       label="Price"
+      min="0"
       placeholder="Price"
       :value="propertyFormState.price"
     />
