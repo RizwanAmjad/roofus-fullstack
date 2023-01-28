@@ -1,5 +1,6 @@
 const express = require("express")
 
+const { Enrollment } = require("../models/enrollment")
 const { User, validateUserJoi } = require("../models/user")
 
 const router = express.Router()
@@ -27,9 +28,14 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params
   // delete the user
   try {
-    const user = await User.findByIdAndRemove(id)
+    const user = await User.findById(id)
     if (!user) return res.status(404).send({ error: "User not Found!" })
-    return res.send({ data: user })
+    // delete enrollments associated with user
+    const enrollments = await Enrollment.find({ user: id })
+    await Promise.all(
+      enrollments.map(async (enrollment) => await enrollment.remove())
+    )
+    return res.send({ data: await user.remove() })
   } catch (ex) {
     return res.status(500).send({ error: "Server Error" })
   }
