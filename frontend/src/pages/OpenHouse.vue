@@ -124,11 +124,19 @@ const handleUpdate = async () => {
     endDate: openHouseUpdateFormState.endDate.data,
   }
   // update in backend
-  await openHouseApi.updateOpenHouse(editingId.data, updates)
+  const response = await openHouseApi.updateOpenHouse(editingId.data, updates)
+
   // update in UI
-  openHouses.value = openHouses.value.map((openHouse) =>
-    openHouse._id === editingId.data ? { ...openHouse, ...updates } : openHouse
-  )
+  const { data: result } = response
+  if (response.ok) {
+    openHouses.value = openHouses.value.map((openHouse) =>
+      openHouse._id === editingId.data
+        ? { ...openHouse, ...updates }
+        : openHouse
+    )
+  } else {
+    alert(result.error)
+  }
 
   // close the modal
   editingId.data = undefined
