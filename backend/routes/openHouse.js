@@ -33,10 +33,16 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params
   // delete the openHouse
   try {
-    const openHouse = await OpenHouse.findByIdAndRemove(id)
+    const openHouse = await OpenHouse.findById(id)
     if (!openHouse)
       return res.status(404).send({ error: "Open House not Found!" })
-    return res.send({ data: openHouse })
+
+    // delete enrollments associated with openhouse
+    const enrollments = await Enrollment.find({ openHouse: id })
+    await Promise.all(
+      enrollments.map(async (enrollment) => await enrollment.remove())
+    )
+    return res.send({ data: await openHouse.remove() })
   } catch (ex) {
     return res.status(500).send({ error: "Server Error" })
   }
