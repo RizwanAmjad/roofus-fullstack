@@ -1,5 +1,7 @@
 const express = require("express")
 
+const { Enrollment } = require("../models/enrollment")
+const { OpenHouse } = require("../models/openHouse")
 const { Property, validatePropertyJoi } = require("../models/property")
 
 const router = express.Router()
@@ -29,6 +31,16 @@ router.delete("/:id", async (req, res) => {
   try {
     const property = await Property.findByIdAndRemove(id)
     if (!property) return res.status(404).send({ error: "Property not Found!" })
+    // delete all associated open houses
+    const openHouses = await OpenHouse.find({ property: id })
+    await Promise.all(
+      openHouses.map(async (openHouse) => {
+        openHouse.remove()
+        // delete enrollments associated with openhouse
+        const enrollments = await Enrollment.find({ openHouse: openHouse._id })
+        enrollments.map((enrollment) => enrollment.remove())
+      })
+    )
     return res.send({ data: property })
   } catch (ex) {
     return res.status(500).send({ error: "Server Error" })
