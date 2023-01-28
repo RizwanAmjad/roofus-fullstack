@@ -22,6 +22,20 @@ router.post("/", async (req, res) => {
   const user = await User.findById(enrollment.user)
   if (!user) return res.status(404).send({ error: "User not found" })
 
+  // check if user is already enrolled
+  const enrollmentExists = await Enrollment.find({ ...enrollment }).count()
+  if (enrollmentExists)
+    return res
+      .status(400)
+      .send({ error: "User already enrolled in this OpenHouse" })
+
+  // get count of enrolled users in the openhouse
+  const usersEnrolled = await Enrollment.find({ openHouse }).count()
+  // check if there is room in the openhouse
+  if (usersEnrolled >= openHouse.visitorAmount) {
+    return res.status(400).send({ error: "No more room in the Open House" })
+  }
+
   // create and save mongoose object
   try {
     enrollment = new Enrollment(enrollment)
@@ -61,6 +75,13 @@ router.put("/:id", async (req, res) => {
   // check if user exists
   const user = await User.findById(enrollment.user)
   if (!user) return res.status(404).send({ error: "User not found" })
+
+  // check if user is already enrolled
+  const enrollmentExists = await Enrollment.find({ ...enrollment }).count()
+  if (enrollmentExists)
+    return res
+      .status(400)
+      .send({ error: "User already enrolled in this OpenHouse" })
 
   // update the enrollment
   try {

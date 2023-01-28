@@ -119,9 +119,17 @@ const handleUpdate = async () => {
     user: enrollmentUpdateFormState.user.data,
   }
   // update in backend
-  await enrollmentApi.updateEnrollments(editingId.data, updates)
+  const response = await enrollmentApi.updateEnrollments(
+    editingId.data,
+    updates
+  )
   // update in UI
-  await loadEnrollments()
+  const { data: result } = response
+  if (response.ok) {
+    await loadEnrollments()
+  } else {
+    alert(result.error)
+  }
 
   // close the modal
   editingId.data = undefined
