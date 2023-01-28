@@ -2,6 +2,7 @@ const express = require("express")
 
 const router = express.Router()
 
+const { Enrollment } = require("../models/enrollment")
 const { OpenHouse, validateOpenHouseJoi } = require("../models/openHouse")
 const { Property } = require("../models/property")
 
@@ -53,6 +54,14 @@ router.put("/:id", async (req, res) => {
   const property = await Property.findById(openHouse.property)
   if (!property) return res.status(404).send({ error: "Property not found" })
 
+  // check if new visitorAmount is greater than already enrolled visitors
+  const enrolledVisitorAmount = await Enrollment.find({ openHouse: id }).count()
+
+  if (enrolledVisitorAmount > openHouse.visitorAmount) {
+    return res.status(400).send({
+      error: `New visitor amount should be greater than already enrolled vistors i-e ${enrolledVisitorAmount}`,
+    })
+  }
   // update the openHouse
   try {
     openHouse = await OpenHouse.findByIdAndUpdate(id, openHouse)
