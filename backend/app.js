@@ -2,6 +2,8 @@ const cors = require("cors")
 const express = require("express")
 const mongoose = require("mongoose")
 
+const { Admin } = require("./models/admin")
+
 // routes
 const admin = require("./routes/admin")
 const enrollment = require("./routes/enrollment")
@@ -11,6 +13,8 @@ const user = require("./routes/user")
 
 const adminAuth = require("./middlewares/authAdmin")
 
+const defaultAdmin = require("./defaultAdmin.json")
+
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/roofus"
 const PORT = process.env.PORT || 3000
@@ -18,7 +22,13 @@ const PORT = process.env.PORT || 3000
 mongoose.set("strictQuery", false)
 mongoose
   .connect(MONGODB_URI)
-  .then(() => console.log("Connected to mongodb"))
+  .then(() => {
+    console.log("Connected to mongodb")
+    // create a default admin if it doesn't exist
+    Admin.find({ email: defaultAdmin.email }).then((admin) => {
+      if (!admin.length) Admin.create(defaultAdmin)
+    })
+  })
   .catch(() => console.log("Couldn't connect to mongodb"))
 
 const app = express()
