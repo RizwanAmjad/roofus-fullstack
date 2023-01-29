@@ -15,7 +15,7 @@ defineProps([
   <div class="flex items-center justify-between">
     <div class="grid grid-cols-4 w-5/6 text-center">
       <RouterLink
-        :to="`property/${property}`"
+        :to="`/property/${property}`"
         class="font-bold text-left hover:text-sky-500 underline"
       >
         <code class="text-ellipsis overflow-hidden">{{ property }}</code>
