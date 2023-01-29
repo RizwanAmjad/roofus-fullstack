@@ -10,8 +10,8 @@ const deleteOpenHouse = (id) => {
   return request.delete(`${endpoint}/${id}`)
 }
 
-const listOpenHouse = (limit, page) => {
-  return request.get(endpoint, { limit, page })
+const listOpenHouse = (limit, page, property, upcoming) => {
+  return request.get(endpoint, { limit, page, property, upcoming })
 }
 
 const updateOpenHouse = (id, openHouse) => {

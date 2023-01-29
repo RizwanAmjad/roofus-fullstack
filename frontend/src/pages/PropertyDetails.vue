@@ -59,7 +59,9 @@ watchEffect(async () => {
 watchEffect(async () => {
   const response = await openHouseApi.listOpenHouse(
     paginationState.limit.data,
-    paginationState.page.data
+    paginationState.page.data,
+    params.id, //property id
+    true // upcoming
   )
   const { data: result } = response
   if (response.ok) {
