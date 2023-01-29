@@ -1,11 +1,24 @@
 <script setup>
-defineProps(["address", "price", "description", "onDelete", "onUpdate"])
+import { RouterLink } from "vue-router"
+
+defineProps([
+  "address",
+  "price",
+  "propertyId",
+  "description",
+  "onDelete",
+  "onUpdate",
+])
 </script>
 
 <template>
   <div class="flex items-center justify-between">
     <div class="grid grid-cols-3 w-5/6 text-center">
-      <div class="text-left">{{ address }}</div>
+      <RouterLink
+        :to="`/property/${propertyId}`"
+        class="font-bold hover:text-sky-500 underline"
+        ><div class="text-left">{{ address }}</div></RouterLink
+      >
       <div>{{ price }}</div>
       <div>{{ description }}</div>
     </div>

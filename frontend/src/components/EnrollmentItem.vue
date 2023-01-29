@@ -1,11 +1,18 @@
 <script setup>
+import { RouterLink } from "vue-router"
+
 defineProps(["openHouse", "property", "date", "user", "onDelete", "onUpdate"])
 </script>
 
 <template>
   <div class="flex items-center justify-between">
     <div class="grid grid-cols-3 w-5/6 text-center">
-      <div class="text-left">{{ property }}</div>
+      <RouterLink
+        :to="`property/${property}`"
+        class="font-bold text-left hover:text-sky-500 underline"
+      >
+        <code class="text-ellipsis overflow-hidden">{{ property }}</code>
+      </RouterLink>
       <div>{{ user }}</div>
       <div>{{ date }}</div>
     </div>

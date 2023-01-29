@@ -142,6 +142,7 @@ const handleUpdate = async () => {
       v-for="property in properties"
       :address="property.address"
       :description="property.description"
+      :propertyId="property._id"
       :price="property.price"
       :onDelete="() => handleDelete(property._id)"
       :onUpdate="() => handleOpenUpdate(property._id)"
