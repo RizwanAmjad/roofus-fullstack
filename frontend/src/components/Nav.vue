@@ -1,4 +1,5 @@
 <script setup>
+import { RouterLink } from "vue-router"
 import { useAuthStore } from "../stores/auth"
 import auth from "../auth"
 
@@ -14,15 +15,21 @@ const handleLogout = () => {
 <template>
   <div class="bg-gray-900 flex font-medium">
     <template v-if="authStore.user">
-      <div class="px-4 py-2"><a href="#/">Home</a></div>
-      <div class="px-4 py-2"><a href="#/user">User</a></div>
-      <div class="px-4 py-2"><a href="#/property">Property</a></div>
-      <div class="px-4 py-2"><a href="#/open-house">Open House</a></div>
-      <div class="px-4 py-2"><a href="#/enrollment">Enrollment</a></div>
+      <div class="px-4 py-2"><RouterLink to="/">Home</RouterLink></div>
+      <div class="px-4 py-2"><RouterLink to="/user">User</RouterLink></div>
+      <div class="px-4 py-2">
+        <RouterLink to="/property">Property</RouterLink>
+      </div>
+      <div class="px-4 py-2">
+        <RouterLink to="/open-house">Open House</RouterLink>
+      </div>
+      <div class="px-4 py-2">
+        <RouterLink to="/enrollment">Enrollment</RouterLink>
+      </div>
       <div class="px-4 py-2 cursor-pointer" @click="handleLogout">Logout</div>
     </template>
     <div class="px-4 py-2" v-else>
-      <a href="#/login">Login</a>
+      <RouterLink to="#/login">Login</RouterLink>
     </div>
   </div>
 </template>
