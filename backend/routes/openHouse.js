@@ -81,9 +81,19 @@ router.put("/:id", async (req, res) => {
 
 // get paginated openHouse
 router.get("/", async (req, res) => {
-  const { page, limit } = req.query
+  const { page, limit, property, upcoming } = req.query
+  let filters = {}
+
+  if (property) filters = { ...filters, property }
+  if (upcoming) {
+    const today = new Date()
+    today.setHours(0)
+    today.setMinutes(0)
+    today.setSeconds(0)
+    filters = { ...filters, ...{ startDate: { $gte: today } } }
+  }
   // paginate the openHouse
-  const openHouses = await OpenHouse.find()
+  const openHouses = await OpenHouse.find(filters)
     .populate("property")
     .sort({ _id: -1 })
     .limit(limit)
