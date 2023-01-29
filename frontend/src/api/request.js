@@ -1,7 +1,8 @@
 import { create } from "apisauce"
 import auth from "../auth"
+import config from "../config.json"
 
-const baseURL = "http://localhost:3000/api"
+const baseURL = config.API_BASE_URL
 const AUTH_HEADER = "x-auth-token"
 
 const api = create({

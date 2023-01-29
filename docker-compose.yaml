@@ -1,0 +1,22 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo:3.6.19-xenial
+    ports:
+      - "27017:27017"
+  backend:
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/roofus
+    build:
+      context: ./backend
+    depends_on:
+      - mongodb
+    ports:
+      - "3000:3000"
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8080:3000"

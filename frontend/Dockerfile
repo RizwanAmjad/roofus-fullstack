@@ -6,9 +6,13 @@ WORKDIR /app
 
 COPY --chown=app:app package*.json ./
 
+ENV CONFIG='{"API_BASE_URL":"http://backend:3000/api"}'
+
 RUN npm install
 
 COPY --chown=app:app ./ ./
+
+RUN echo $CONFIG>src/config.json
 
 RUN npm run build
 
