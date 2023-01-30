@@ -6,6 +6,16 @@ const { Enrollment } = require("../models/enrollment")
 const { OpenHouse, validateOpenHouseJoi } = require("../models/openHouse")
 const { Property } = require("../models/property")
 
+const checkIfOpenHouseExists = async (openHouse) => {
+  const openHouses = await OpenHouse.find({
+    property: openHouse.property,
+    startDate: openHouse.startDate,
+    endDate: openHouse.endDate,
+  })
+
+  return openHouses.length
+}
+
 // create openHouse
 router.post("/", async (req, res) => {
   // get the new openHouse info from the req body
@@ -17,6 +27,12 @@ router.post("/", async (req, res) => {
   // check if property exists
   const property = await Property.findById(openHouse.property)
   if (!property) return res.status(404).send({ error: "Property not found" })
+
+  // check if open house already exists
+  if (await checkIfOpenHouseExists(openHouse))
+    return res.status(400).send({
+      error: "Open House Already Exists on same property and date interval",
+    })
 
   // create and save mongoose object
   try {
@@ -68,6 +84,13 @@ router.put("/:id", async (req, res) => {
       error: `New visitor amount should be greater than already enrolled vistors i-e ${enrolledVisitorAmount}`,
     })
   }
+
+  // check if open house already exists
+  if (await checkIfOpenHouseExists(openHouse))
+    return res.status(400).send({
+      error: "Open House Already Exists on same property and date interval",
+    })
+
   // update the openHouse
   try {
     openHouse = await OpenHouse.findByIdAndUpdate(id, openHouse)
