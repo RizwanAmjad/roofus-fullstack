@@ -29,7 +29,7 @@ const handleLogout = () => {
       <div class="px-4 py-2 cursor-pointer" @click="handleLogout">Logout</div>
     </template>
     <div class="px-4 py-2" v-else>
-      <RouterLink to="#/login">Login</RouterLink>
+      <RouterLink to="/login">Login</RouterLink>
     </div>
   </div>
 </template>

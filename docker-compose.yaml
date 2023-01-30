@@ -4,6 +4,9 @@ services:
     image: mongo:3.6.19-xenial
     ports:
       - "27017:27017"
+    networks: 
+      - roofus
+
   backend:
     environment:
       - MONGODB_URI=mongodb://mongodb:27017/roofus
@@ -13,10 +16,22 @@ services:
       - mongodb
     ports:
       - "3000:3000"
+    networks: 
+      - roofus
+
   frontend:
+    environment:
+      - CONFIG='{"API_BASE_URL":"http://backend:3000/api"}'
+
     build:
       context: ./frontend
     depends_on:
       - backend
     ports:
       - "8080:3000"
+    networks: 
+      - roofus
+
+networks:
+  roofus:
+    driver: bridge
