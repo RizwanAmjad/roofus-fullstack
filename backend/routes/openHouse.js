@@ -9,8 +9,8 @@ const { Property } = require("../models/property")
 const checkIfOpenHouseExists = async (openHouse) => {
   const openHouses = await OpenHouse.find({
     property: openHouse.property,
-    startDate: openHouse.startDate,
-    endDate: openHouse.endDate,
+    startDate: { $lte: openHouse.endDate },
+    endDate: { $gte: openHouse.startDate },
   })
 
   return openHouses.length
