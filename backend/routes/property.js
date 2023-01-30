@@ -74,7 +74,7 @@ router.get("/", async (req, res) => {
   const properties = await Property.find()
     .sort({ _id: -1 })
     .limit(limit)
-    .skip(limit * (page - 1))
+    .skip(limit & page ? limit * (page - 1) : undefined)
 
   const count = await Property.find().count()
 

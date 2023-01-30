@@ -102,7 +102,7 @@ router.get("/", async (req, res) => {
     .populate(["openHouse", "user"])
     .sort({ _id: -1 })
     .limit(limit)
-    .skip(limit * (page - 1))
+    .skip(limit & page ? limit * (page - 1) : undefined)
 
   const count = await Enrollment.find().count()
 

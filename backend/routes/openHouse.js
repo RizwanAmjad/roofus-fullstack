@@ -90,6 +90,7 @@ router.get("/", async (req, res) => {
     today.setHours(0)
     today.setMinutes(0)
     today.setSeconds(0)
+    today.setMilliseconds(0)
     filters = { ...filters, ...{ startDate: { $gte: today } } }
   }
   // paginate the openHouse
@@ -97,7 +98,7 @@ router.get("/", async (req, res) => {
     .populate("property")
     .sort({ _id: -1 })
     .limit(limit)
-    .skip(limit * (page - 1))
+    .skip(limit & page ? limit * (page - 1) : undefined)
 
   const count = await OpenHouse.find().count()
 
