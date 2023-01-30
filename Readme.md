@@ -3,6 +3,7 @@
 ## Run Using Docker Compose
 
 Simply run `docker-compose up` (in project root) to start the project as a multicontainer app.
+When running it in docker-compose it will start on port `8080`
 
 ## Project Structure
 
