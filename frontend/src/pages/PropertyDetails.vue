@@ -69,6 +69,21 @@ watchEffect(async () => {
   }
 })
 
+// delete open house
+const handleDelete = async (id) => {
+  const sureToDelete = confirm("Are you sure to delete Open House?")
+  if (!sureToDelete) return
+
+  const response = await openHouseApi.deleteOpenHouse(id)
+  const { data: result } = response
+  if (response.ok) {
+    openHouses.value = openHouses.value.filter(
+      ({ _id }) => _id !== result.data._id
+    )
+    return
+  }
+}
+
 const handleOpenUpdate = (id) => {
   editingId.data = id
   const openHouse = openHouses.value.find((openHouse) => openHouse._id === id)
