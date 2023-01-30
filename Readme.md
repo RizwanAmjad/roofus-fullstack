@@ -1,6 +1,10 @@
 # Roofus
 
-Project Structure
+## Run Using Docker Compose
+
+Simply run `docker-compose up` (in project root) to start the project as a multicontainer app.
+
+## Project Structure
 
 - `backend` (Express Backend)
 
